@@ -8,6 +8,9 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace NetCore.AutoRegisterDi
 {
+    /// <summary>
+    /// This contains the extension methods for registering classes automatically
+    /// </summary>
     public static class AutoRegisterHelpers
     {
         /// <summary>

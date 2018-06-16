@@ -1,6 +1,6 @@
 # NetCore.AutoRegisterDi
 
-This [NuGet library]()
+This [NuGet library](https://www.nuget.org/packages/NetCore.AutoRegisterDi/)
 contains an extension method to scan an assemby and register all 
 the public classes against their implemented interfaces(s) into the
 Microsoft.Extensions.DependencyInjection dependency injection provider. 
@@ -21,7 +21,9 @@ public void ConfigureServices(IServiceCollection services)
      .AsPublicImplementedInterfaces();
 ```
 
-## Wht have I written this extension?
+Licence: MIT.
+
+## Why have I written this extension?
 
 There are two reasons:
 
@@ -33,6 +35,8 @@ feature, but I then saw a [tweet by @davidfowl](https://twitter.com/davidfowl/st
 which showed the Microsoft's DI provider was much faster than AutoFac.
 I therefore implemented a similar (but not exactly the same) feature for the
 Microsoft.Extensions.DependencyInjection library.
+
+**Thanks to Inventory Innovations, Inc. who sponsored the creation of this library.**
 
 ### Detailed information
 
@@ -54,7 +58,7 @@ The exact criteria I use are:
 - Not Generic, e.g. MyClass<T>
 - Not Abstract
 
-It can take a list/array of assemblies to scan. Two typical wasy of providing an assembly are:
+The method takes a list/array of assemblies to scan. Two typical ways of providing an assembly are:
 
 - `Assembly.GetExecutingAssembly()`, which does what is says
 - `Assembly.GetAssembly(typeof(YourClass))`, which gets the assembly that `YourClass` was defined in.

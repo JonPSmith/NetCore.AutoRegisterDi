@@ -55,7 +55,7 @@ The exact criteria I use are:
 
 - Public access
 - Not nested, e.g. It won't look at classes defined inside other classes
-- Not Generic, e.g. MyClass<T>
+- Not Generic, e.g. MyClass\<T\>
 - Not Abstract
 
 The method takes a list/array of assemblies to scan. Two typical ways of providing an assembly are:

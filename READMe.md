@@ -65,18 +65,23 @@ The method takes a list/array of assemblies to scan. Two typical ways of providi
 
 #### 2. The `Where` method
 
-Pretty straughtforward - you are provided with the `Type` of each class and
+Pretty straightforward - you are provided with the `Type` of each class and
 you can filter by any of the `Type` properties etc. This allows you to
 do things like only registering certain classes,
 e.g `Where(c => c.Name.EndsWith("Service"))`
 
-*NOTE: Useful also if you want to register some classes with a different timetime scope.*
+*NOTE: Useful also if you want to register some classes with a different timetime scope -
+See next section.*
 
 #### 3. The `AsPublicImplementedInterfaces` method
 
 The `AsPublicImplementedInterfaces` method finds any public, non-nested interfaces 
 (apart from `IDisposable`) that each class implements and registers each
 interface, known as *service type*, against the class, known as the *implementation type*.
+This means if you use an interface in a constructor (or other DI-enabled places)
+then the Microsoft DI resolver will provide an instance of the class that interface
+was linked to.
+*See [Microsoft DI Docs](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/dependency-injection?view=aspnetcore-2.1) for more on this*.*
 
 By default it will register the classes as having a lifetime of `ServiceLifetime.Transient`,
 but there is a parameter that allows you to override that.

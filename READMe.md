@@ -24,7 +24,7 @@ public void ConfigureServices(IServiceCollection services)
 Licence: MIT.
 
 **See [this article](https://www.thereformedprogrammer.net/asp-net-core-fast-and-automatic-dependency-injection-setup/)
-for a bigger coverage of Microsoft DI and the application of this library in real applications.**
+for a bigger coverage of Microsoft DI and the use of this library in real applications.**
 
 ## Why have I written this extension?
 

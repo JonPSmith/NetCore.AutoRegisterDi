@@ -3,8 +3,8 @@
 
 namespace Test
 {
-    public class MyOtherService : IMyOtherService
+    public interface IMyService
     {
-        public int MyInt { get; set; }
-    }  
+        string IntToString(int num);
+    }
 }

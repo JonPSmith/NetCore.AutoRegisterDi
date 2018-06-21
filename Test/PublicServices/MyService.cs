@@ -3,5 +3,11 @@
 
 namespace Test
 {
-    public interface IMyService { int MyInt { get; } }
+    public class MyService : IMyService, TestAutoRegisterDi.INestedMyService
+    {
+        public string IntToString(int num)
+        {
+            return num.ToString();
+        }
+    }  
 }

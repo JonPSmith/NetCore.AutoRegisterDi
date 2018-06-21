@@ -3,8 +3,8 @@
 
 namespace Test
 {
-    public class MyService : IMyService, TestAutoRegisterDi.INestedMyService
+    public class MyOtherService : IMyOtherService
     {
-        public int MyInt { get; set; }
+        public string Result { get; set; }
     }  
 }

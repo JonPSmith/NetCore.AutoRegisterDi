@@ -14,13 +14,17 @@ namespace Test
 {
     public class TestAutoRegisterDi
     {
-        public interface INestedMyService {
-            int MyInt { get; }
+        public interface INestedMyService
+        {
+            string IntToString(int num);
         }
 
-        public class NestedMyService
+        public class NestedMyService : INestedMyService
         {
-            public int MyInt { get; set; }
+            public string IntToString(int num)
+            {
+                return num.ToString();
+            }
         }
 
         [Fact]
@@ -34,7 +38,7 @@ namespace Test
 
             //VERIFY
             //does not cotain nested class
-            autoRegData.TypesToConsider.ShouldEqual( new []{typeof(MyOtherService), typeof(MyService), typeof(TestAutoRegisterDi) });
+            autoRegData.TypesToConsider.ShouldEqual( new []{typeof(MyOtherService), typeof(MyService), typeof(UseService), typeof(TestAutoRegisterDi) });
         }
 
         [Fact]
@@ -76,7 +80,7 @@ namespace Test
             var service = new ServiceCollection();
 
             //ATTEMP
-            var autoRegData = service.RegisterAssemblyPublicNonGenericClasses(Assembly.GetExecutingAssembly())
+            service.RegisterAssemblyPublicNonGenericClasses(Assembly.GetExecutingAssembly())
                 .Where(x => x.Name == nameof(MyService))
                 .AsPublicImplementedInterfaces();
 

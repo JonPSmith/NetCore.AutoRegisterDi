@@ -3,5 +3,5 @@
 
 namespace Test
 {
-    public interface IMyOtherService { int MyInt { get; } }
+    public interface IMyOtherService { string Result { get; } }
 }

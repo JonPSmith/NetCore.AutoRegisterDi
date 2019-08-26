@@ -7,38 +7,27 @@ using System.Linq;
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 using NetCore.AutoRegisterDi;
+using TestAssembly;
 using Xunit;
 using Xunit.Extensions.AssertExtensions;
 
 namespace Test
 {
-    public class TestAutoRegisterDi
+    public class TestAutoRegisterDiDifferentAssembly
     {
-        public interface INestedMyService
-        {
-            string IntToString(int num);
-        }
-
-        public class NestedMyService : INestedMyService
-        {
-            public string IntToString(int num)
-            {
-                return num.ToString();
-            }
-        }
-
         [Fact]
         public void TestRegisterAssemblyPublicNonGenericClasses()
         {
             //SETUP
             var service = new ServiceCollection();
 
-            //ATTEMP
-            var autoRegData = service.RegisterAssemblyPublicNonGenericClasses(Assembly.GetExecutingAssembly());
+            //ATTEMPT
+            var autoRegData = service.RegisterAssemblyPublicNonGenericClasses(Assembly.GetAssembly(typeof(MyService)));
 
             //VERIFY
-            //does not cotain nested class
-            autoRegData.TypesToConsider.ShouldEqual( new []{typeof(MyOtherService), typeof(MyService), typeof(UseService), typeof(TestAutoRegisterDi) });
+            //does not contain nested class
+            autoRegData.TypesToConsider.ShouldEqual( 
+                new []{typeof(ClassWithNestedService), typeof(MyOtherService), typeof(MyService), typeof(UseService)});
         }
 
         [Fact]
@@ -47,8 +36,8 @@ namespace Test
             //SETUP
             var service = new ServiceCollection();
 
-            //ATTEMP
-            service.RegisterAssemblyPublicNonGenericClasses(Assembly.GetExecutingAssembly())
+            //ATTEMPT
+            service.RegisterAssemblyPublicNonGenericClasses(Assembly.GetAssembly(typeof(MyService)))
                 .AsPublicImplementedInterfaces();
 
             //VERIFY
@@ -63,8 +52,8 @@ namespace Test
             //SETUP
             var service = new ServiceCollection();
 
-            //ATTEMP
-            service.RegisterAssemblyPublicNonGenericClasses(Assembly.GetExecutingAssembly())
+            //ATTEMPT
+            service.RegisterAssemblyPublicNonGenericClasses(Assembly.GetAssembly(typeof(MyService)))
                 .AsPublicImplementedInterfaces(ServiceLifetime.Scoped);
 
             //VERIFY
@@ -79,8 +68,8 @@ namespace Test
             //SETUP
             var service = new ServiceCollection();
 
-            //ATTEMP
-            service.RegisterAssemblyPublicNonGenericClasses(Assembly.GetExecutingAssembly())
+            //ATTEMPT
+            service.RegisterAssemblyPublicNonGenericClasses(Assembly.GetAssembly(typeof(MyService)))
                 .Where(x => x.Name == nameof(MyService))
                 .AsPublicImplementedInterfaces();
 

@@ -1,10 +1,10 @@
 ﻿// Copyright (c) 2018 Inventory Innovations, Inc. - build by Jon P Smith (GitHub JonPSmith)
 // Licensed under MIT licence. See License.txt in the project root for license information.
 
-namespace Test
+namespace TestAssembly
 {
-    public interface IMyService
+    public class MyOtherService : IMyOtherService
     {
-        string IntToString(int num);
-    }
+        public string Result { get; set; }
+    }  
 }

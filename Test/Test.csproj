@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\NetCore.AutoRegisterDi\NetCore.AutoRegisterDi.csproj" />
+    <ProjectReference Include="..\TestAssembly\TestAssembly.csproj" />
   </ItemGroup>
 
 </Project>

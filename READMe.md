@@ -7,19 +7,40 @@ Microsoft.Extensions.DependencyInjection dependency injection provider.
 
 I have written a simple version of AutoFac's `RegisterAssemblyTypes`
 method that works directly with Microsoft's DI provider.
-Here is an example of me using this with ASP.NET Core
+Here are an example of me using this with ASP.NET Core
+
+#### Example 1 - scan the calling assembly
 
 ```c#
 public void ConfigureServices(IServiceCollection services)
 {
    //... other configure code removed
 
-   var assemblyToScan = Assembly.GetExecutingAssembly(); //..or whatever assembly you need
-
-   service.RegisterAssemblyPublicNonGenericClasses(assemblyToScan)
+   service.RegisterAssemblyPublicNonGenericClasses()
      .Where(c => c.Name.EndsWith("Service"))
      .AsPublicImplementedInterfaces();
 ```
+
+
+#### Example 2 - scaning multiple assemblies
+
+```c#
+public void ConfigureServices(IServiceCollection services)
+{
+   //... other configure code removed
+
+   var assembliesToScan = new [] 
+   {
+        Assembly.GetExecutingAssembly(),
+        Assembly.GetAssembly(typeof(MyServiceInAssembly1)),
+        Assembly.GetAssembly(typeof(MyServiceInAssembly2))
+   };   
+
+   service.RegisterAssemblyPublicNonGenericClasses(assembliesToScan)
+     .Where(c => c.Name.EndsWith("Service"))
+     .AsPublicImplementedInterfaces(); 
+```
+
 
 Licence: MIT.
 
@@ -52,29 +73,24 @@ registers those interfaces as pointing to the class.
 
 #### 1. The `RegisterAssemblyPublicNonGenericClasses` method
 
-The `RegisterAssemblyPublicNonGenericClasses` method will find all the classes
-in the assembly that I referenced that are considered useful for registering.
-The exact criteria I use are:
+The `RegisterAssemblyPublicNonGenericClasses` method will find all the classes in
+
+1. If no assemblies are provided then it scans the assembly that called this method.
+2. You can provide one or more assemblies to be scanned. The easiest way to reference an assembly is to use something like this `Assembly.GetAssembly(typeof(MyService))`, which gets the assembly that `MyService` was defined in.
+
+I only consider classes which match ALL of the critera below:
 
 - Public access
 - Not nested, e.g. It won't look at classes defined inside other classes
 - Not Generic, e.g. MyClass\<T\>
 - Not Abstract
 
-The method takes a list/array of assemblies to scan. Two typical ways of providing an assembly are:
-
-- `Assembly.GetExecutingAssembly()`, which does what is says
-- `Assembly.GetAssembly(typeof(YourClass))`, which gets the assembly that `YourClass` was defined in.
 
 #### 2. The `Where` method
 
-Pretty straightforward - you are provided with the `Type` of each class and
-you can filter by any of the `Type` properties etc. This allows you to
-do things like only registering certain classes,
-e.g `Where(c => c.Name.EndsWith("Service"))`
+Pretty straightforward - you are provided with the `Type` of each class and you can filter by any of the `Type` properties etc. This allows you to do things like only registering certain classes, e.g `Where(c => c.Name.EndsWith("Service"))`
 
-*NOTE: Useful also if you want to register some classes with a different timetime scope -
-See next section.*
+*NOTE: Useful also if you want to register some classes with a different timetime scope - See next section.*
 
 #### 3. The `AsPublicImplementedInterfaces` method
 

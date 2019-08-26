@@ -48,7 +48,7 @@ namespace NetCore.AutoRegisterDi
         /// This registers the classes against any public interfaces (other than IDisposable) implemented by the class
         /// </summary>
         /// <param name="autoRegData">AutoRegister data produced by <see cref="RegisterAssemblyPublicNonGenericClasses"/></param> method
-        /// <param name="lifetime">Allows you to define the scope of the service - defaults to ServiceLifetime.Transient</param>
+        /// <param name="lifetime">Allows you to define the lifetime of the service - defaults to ServiceLifetime.Transient</param>
         /// <returns></returns>
         public static IServiceCollection AsPublicImplementedInterfaces(this AutoRegisterData autoRegData, 
             ServiceLifetime lifetime = ServiceLifetime.Transient)

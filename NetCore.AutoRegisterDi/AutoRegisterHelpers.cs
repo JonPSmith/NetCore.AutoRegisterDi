@@ -20,13 +20,14 @@ namespace NetCore.AutoRegisterDi
         /// <param name="services">the NET Core dependency injection service</param>
         /// <param name="assemblies">Each assembly you want scanned. If null then scans the the assembly that called the method</param>
         /// <returns></returns>
-        public static AutoRegisterData RegisterAssemblyPublicNonGenericClasses(this IServiceCollection services, params Assembly[] assemblies)
+        public static AutoRegisterData RegisterAssemblyPublicNonGenericClasses(this IServiceCollection services,
+            params Assembly[] assemblies)
         {
             if (assemblies.Length == 0)
                 assemblies = new[] {Assembly.GetCallingAssembly()};
 
             var allPublicTypes = assemblies.SelectMany(x => x.GetExportedTypes()
-                .Where(y => y.IsClass && !y.IsAbstract && !y.IsGenericType && !y.IsNested));
+                .Where(y => y.IsClass && !y.IsAbstract && !y.IsGenericType && !y.IsNested && !y.IsIgnoredType()));
             return new AutoRegisterData(services, allPublicTypes);
         }
 
@@ -48,17 +49,19 @@ namespace NetCore.AutoRegisterDi
         /// This registers the classes against any public interfaces (other than IDisposable) implemented by the class
         /// </summary>
         /// <param name="autoRegData">AutoRegister data produced by <see cref="RegisterAssemblyPublicNonGenericClasses"/></param> method
-        /// <param name="lifetime">Allows you to define the lifetime of the service - defaults to ServiceLifetime.Transient</param>
         /// <returns></returns>
-        public static IServiceCollection AsPublicImplementedInterfaces(this AutoRegisterData autoRegData, 
-            ServiceLifetime lifetime = ServiceLifetime.Transient)
+        public static IServiceCollection AsPublicImplementedInterfaces(this AutoRegisterData autoRegData)
         {
             if (autoRegData == null) throw new ArgumentNullException(nameof(autoRegData));
-            foreach (var classType in (autoRegData.TypeFilter == null 
-                ? autoRegData.TypesToConsider 
+            foreach (var classType in (autoRegData.TypeFilter == null
+                ? autoRegData.TypesToConsider
                 : autoRegData.TypesToConsider.Where(autoRegData.TypeFilter)))
             {
+                if (classType.IsMultipleLifetime())
+                    throw new ArgumentException($"Class {classType.FullName} has multiple life time attributes");
+
                 var interfaces = classType.GetTypeInfo().ImplementedInterfaces;
+                var lifetime = classType.GetTypeLiteTime();
                 foreach (var infc in interfaces.Where(i => i != typeof(IDisposable) && i.IsPublic && !i.IsNested))
                 {
                     autoRegData.Services.Add(new ServiceDescriptor(infc, classType, lifetime));

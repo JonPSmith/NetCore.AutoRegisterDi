@@ -3,6 +3,9 @@
 
 namespace Test
 {
+    using NetCore.AutoRegisterDi.Attributes;
+
+    [RegisterAsTransient]
     public class LocalService : ILocalService
     {
         public bool IsPositive(int i)

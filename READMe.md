@@ -4,7 +4,7 @@ This [NuGet library](https://www.nuget.org/packages/NetCore.AutoRegisterDi/) con
 
 I have written a simple version of AutoFac's `RegisterAssemblyTypes` method that works directly with Microsoft's DI provider. Here are an example of me using this with ASP.NET Core.
 
-**Version 2 update**: New attributes for defining the `ServiceLifetime` of your classes, e.g. adding the `[RegisterAsScoped]` attribute to a class will mean its `ServiceLifetime` in the DI will be set to `Scoped`.
+**Version 2 update**: New attributes for defining the `ServiceLifetime` of your classes, e.g. adding the `[RegisterAsScoped]` attribute to a class will mean its `ServiceLifetime` in the DI will be set to `Scoped`. *Added by Fedor Zhekov (GitHub @ZFi88)*.
 
 #### Example 1 - scan the calling assembly
 

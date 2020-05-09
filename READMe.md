@@ -65,9 +65,9 @@ There are four parts:
 1. `RegisterAssemblyPublicNonGenericClasses`, which finds all the classes.
 2. An options `Where` method, which allows you to filter the classes to be considered.
 3. The `AsPublicImplementedInterfaces` method which finds ant interfaces on a class and registers those interfaces as pointing to the class.
-4. Various attributes that you can add to your classes to:
+4. Various attributes that you can add to your classes to tell `NetCore.AutoRegisterDi` what to do:
    i) Set the `ServiceLifetime` of your class, e.g. `[RegisterAsSingleton]` to apply a `Singleton` lifetime to your class.
-   ii) A `[DoNotAutoRegister]` attribute to stop your class from being registered with the DI.
+   ii) A `[DoNotAutoRegister]` attribute to stop library your class from being registered with the DI.
 
 
 #### 1. The `RegisterAssemblyPublicNonGenericClasses` method
@@ -111,10 +111,10 @@ on what lifetime (and other terms) means.*
 
 Fedor Zhekov, (GitHub @ZFi88) added attributes to allow you to define the `ServiceLifetime` of your class, and also exclude your class from being registered with the DI. 
 
-Here are the attributes that sets the `ServiceLifetime` to be used when your class is registered with the DI.
+Here are the attributes that sets the `ServiceLifetime` to be used when `NetCore.AutoRegisterDi` registers your class with the DI.
 
 1. `[RegisterAsSingleton]` - Singleton lifetime.
 2. `[RegisterAsTransient]` - Transient lifetime.
 3. `[RegisterAsScoped]` - Scoped lifetime.
 
-The last attribute is `[DoNotAutoRegister]`, which stops that class being registered with the DI. 
+The last attribute is `[DoNotAutoRegister]`, which stops `NetCore.AutoRegisterDi` registered that class with the DI. 

@@ -25,8 +25,15 @@ namespace Test
 
             //VERIFY
             //does not contain nested class
-            autoRegData.TypesToConsider.ShouldEqual( 
-                new []{typeof(LocalService), typeof(TestAutoRegisterDiCallingAssembly), typeof(TestAutoRegisterDiDifferentAssembly)});
+            autoRegData.TypesToConsider.ShouldEqual(
+                new[]
+                {
+                    typeof(LocalScopeService), typeof(LocalService),
+                    typeof(LocalSingletonService), typeof(LocalTransientService),
+                    typeof(TestAutoRegisterDiCallingAssembly),
+                    typeof(TestAutoRegisterDiDifferentAssembly),
+                    typeof(TestTypeExtensions)
+                });
         }
 
         [Fact]
@@ -40,8 +47,10 @@ namespace Test
                 .AsPublicImplementedInterfaces();
 
             //VERIFY
-            service.Count.ShouldEqual(1);
-            service.Contains(new ServiceDescriptor(typeof(ILocalService), typeof(LocalService), ServiceLifetime.Transient), new CheckDescriptor()).ShouldBeTrue();
+            service.Count.ShouldEqual(4);
+            service.Contains(
+                new ServiceDescriptor(typeof(ILocalService), typeof(LocalService), ServiceLifetime.Transient),
+                new CheckDescriptor()).ShouldBeTrue();
         }
 
         [Fact]
@@ -52,11 +61,13 @@ namespace Test
 
             //ATTEMPT
             service.RegisterAssemblyPublicNonGenericClasses()
-                .AsPublicImplementedInterfaces(ServiceLifetime.Scoped);
+                .AsPublicImplementedInterfaces();
 
             //VERIFY
-            service.Count.ShouldEqual(1);
-            service.Contains(new ServiceDescriptor(typeof(ILocalService), typeof(LocalService), ServiceLifetime.Scoped), new CheckDescriptor()).ShouldBeTrue();
+            service.Count.ShouldEqual(4);
+            service.Contains(
+                new ServiceDescriptor(typeof(ILocalService), typeof(LocalScopeService), ServiceLifetime.Scoped),
+                new CheckDescriptor()).ShouldBeTrue();
         }
 
         [Fact]
@@ -73,9 +84,6 @@ namespace Test
             //VERIFY
             service.Count.ShouldEqual(0);
         }
-
-
-
 
         //-------------------------------------------------------------------------
         //private methods
@@ -94,6 +102,5 @@ namespace Test
                 throw new NotImplementedException();
             }
         }
-
     }
 }

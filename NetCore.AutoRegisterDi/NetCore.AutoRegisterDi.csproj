@@ -3,10 +3,10 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageVersion>1.1.0</PackageVersion>
-    <Version>1.1.0</Version>
-    <AssemblyVersion>1.1.0.0</AssemblyVersion>
-    <FileVersion>1.1.0.0</FileVersion>
+    <PackageVersion>2.0.0</PackageVersion>
+    <Version>2.0.0</Version>
+    <AssemblyVersion>2.0.0.0</AssemblyVersion>
+    <FileVersion>2.0.0.0</FileVersion>
     <PackageId>NetCore.AutoRegisterDi</PackageId>
     <PackageProjectUrl>https://github.com/JonPSmith/NetCore.AutoRegisterDi</PackageProjectUrl>
     <PackageLicenseUrl>https://raw.githubusercontent.com/JonPSmith/NetCore.AutoRegisterDi/master/LICENCE.txt</PackageLicenseUrl>
@@ -14,10 +14,10 @@
     <RepositoryType>GitHub</RepositoryType>
     <PackageTags>NetCore DependencyInjection di</PackageTags>
     <Authors>Jon P Smith</Authors>
-    <Copyright>Copyright (c) 2018 Inventory Innovations, Inc. and Selective Analytics Ltd.</Copyright>
+    <Copyright>Copyright (c) 2018 Selective Analytics Ltd.</Copyright>
     <Company>Selective Analytics</Company>
     <Description>Extension method to find/register classes in an assembly into Microsoft.Extensions.DependencyInjection</Description>
-    <PackageReleaseNotes>New Feature: if no assembly is provided it scans the assembly that called the method.</PackageReleaseNotes>
+    <PackageReleaseNotes>New Feature: You can now set what ServiceLifetime your class has via Attributes - see README file.</PackageReleaseNotes>
     <PackageIconUrl>https://raw.githubusercontent.com/JonPSmith/NetCore.AutoRegisterDi/master/AutoRegisterDiIcon128.png</PackageIconUrl>
   </PropertyGroup>
 

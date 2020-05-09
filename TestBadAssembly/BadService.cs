@@ -1,7 +1,8 @@
-﻿namespace TestBadAssembly
+﻿using NetCore.AutoRegisterDi;
+
+namespace TestBadAssembly
 {
     using System;
-    using NetCore.AutoRegisterDi.Attributes;
 
     [RegisterAsSingleton]
     [RegisterAsScoped]

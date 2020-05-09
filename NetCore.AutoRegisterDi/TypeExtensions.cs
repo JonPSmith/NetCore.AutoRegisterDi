@@ -1,14 +1,17 @@
+// Copyright (c) 2020 Jon P Smith, GitHub: JonPSmith, web: http://www.thereformedprogrammer.net/
+// Licensed under MIT license. See License.txt in the project root for license information.
+// Code added/updated by Fedor Zhekov, GitHub: @ZFi88
+
 using System.Runtime.CompilerServices;
+using NetCore.AutoRegisterDi.PublicButHidden;
 
 [assembly: InternalsVisibleTo("Test")]
 
 namespace NetCore.AutoRegisterDi
 {
     using System;
-    using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
-    using Attributes;
     using Microsoft.Extensions.DependencyInjection;
 
 
@@ -34,45 +37,18 @@ namespace NetCore.AutoRegisterDi
         /// <returns></returns>
         public static bool IsMultipleLifetime(this Type type)
         {
-            var attributes = type.GetCustomAttributes(true)
-                .Select(x => x.GetType())
-                .ToList();
-            if (attributes.Any())
-            {
-                return new List<bool>
-                {
-                    attributes.Contains(typeof(RegisterAsTransientAttribute)),
-                    attributes.Contains(typeof(RegisterAsScopedAttribute)),
-                    attributes.Contains(typeof(RegisterAsSingletonAttribute))
-                }.Count(x => x) > 1;
-            }
-
-            return false;
+            return type.GetCustomAttributes(typeof(RegisterWithLifetimeAttribute), true).Count() > 1;
         }
 
         /// <summary>
         /// Returns service lifetime
         /// </summary>
         /// <param name="type">type</param>
+        /// <param name="lifetime">If no attribute then it returns the lifetime provided in the AsPublicImplementedInterfaces parameter</param>
         /// <returns></returns>
-        public static ServiceLifetime GetTypeLiteTime(this Type type)
+        public static ServiceLifetime GetLifetimeForClass(this Type type, ServiceLifetime lifetime)
         {
-            if (type.GetCustomAttribute<RegisterAsTransientAttribute>() != null)
-            {
-                return ServiceLifetime.Transient;
-            }
-
-            if (type.GetCustomAttribute<RegisterAsScopedAttribute>() != null)
-            {
-                return ServiceLifetime.Scoped;
-            }
-
-            if (type.GetCustomAttribute<RegisterAsSingletonAttribute>() != null)
-            {
-                return ServiceLifetime.Singleton;
-            }
-
-            return ServiceLifetime.Transient;
+            return type.GetCustomAttribute<RegisterWithLifetimeAttribute>(true)?.RequiredLifetime ?? lifetime;
         }
     }
 }

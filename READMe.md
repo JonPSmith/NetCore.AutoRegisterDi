@@ -1,13 +1,10 @@
 # NetCore.AutoRegisterDi
 
-This [NuGet library](https://www.nuget.org/packages/NetCore.AutoRegisterDi/)
-contains an extension method to scan an assemby and register all 
-the public classes against their implemented interfaces(s) into the
-Microsoft.Extensions.DependencyInjection dependency injection provider. 
+This [NuGet library](https://www.nuget.org/packages/NetCore.AutoRegisterDi/) contains an extension method to scan an assemby and register all the public classes against their implemented interfaces(s) into the Microsoft.Extensions.DependencyInjection dependency injection provider. 
 
-I have written a simple version of AutoFac's `RegisterAssemblyTypes`
-method that works directly with Microsoft's DI provider.
-Here are an example of me using this with ASP.NET Core
+I have written a simple version of AutoFac's `RegisterAssemblyTypes` method that works directly with Microsoft's DI provider. Here are an example of me using this with ASP.NET Core.
+
+**Version 2 update**: New attributes for defining the `ServiceLifetime` of your classes, e.g. adding the `[RegisterAsScoped]` attribute to a class will mean its `ServiceLifetime` in the DI will be set to `Scoped`.
 
 #### Example 1 - scan the calling assembly
 
@@ -60,15 +57,17 @@ which showed the Microsoft's DI provider was much faster than AutoFac.
 I therefore implemented a similar (but not exactly the same) feature for the
 Microsoft.Extensions.DependencyInjection library.
 
-**Thanks to Inventory Innovations, Inc. who sponsored the creation of this library.**
+
 
 ### Detailed information
 
-There are three parts:
+There are four parts:
 1. `RegisterAssemblyPublicNonGenericClasses`, which finds all the classes.
 2. An options `Where` method, which allows you to filter the classes to be considered.
-3. The `AsPublicImplementedInterfaces` method which finds ant interfaces on a class and
-registers those interfaces as pointing to the class.
+3. The `AsPublicImplementedInterfaces` method which finds ant interfaces on a class and registers those interfaces as pointing to the class.
+4. Various attributes that you can add to your classes to:
+   i) Set the `ServiceLifetime` of your class, e.g. `[RegisterAsSingleton]` to apply a `Singleton` lifetime to your class.
+   ii) A `[DoNotAutoRegister]` attribute to stop your class from being registered with the DI.
 
 
 #### 1. The `RegisterAssemblyPublicNonGenericClasses` method
@@ -107,3 +106,15 @@ but there is a parameter that allows you to override that.
 
 *See this [useful article](https://joonasw.net/view/aspnet-core-di-deep-dive)
 on what lifetime (and other terms) means.*
+
+#### 4. The attributes
+
+Fedor Zhekov, (GitHub @ZFi88) added attributes to allow you to define the `ServiceLifetime` of your class, and also exclude your class from being registered with the DI. 
+
+Here are the attributes that sets the `ServiceLifetime` to be used when your class is registered with the DI.
+
+1. `[RegisterAsSingleton]` - Singleton lifetime.
+2. `[RegisterAsTransient]` - Transient lifetime.
+3. `[RegisterAsScoped]` - Scoped lifetime.
+
+The last attribute is `[DoNotAutoRegister]`, which stops that class being registered with the DI. 

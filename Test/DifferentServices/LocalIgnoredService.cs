@@ -1,7 +1,7 @@
-namespace Test
-{
-    using NetCore.AutoRegisterDi.Attributes;
+using NetCore.AutoRegisterDi;
 
+namespace Test.DifferentServices
+{
     [DoNotAutoRegister]
     public class LocalIgnoredService : ILocalService
     {

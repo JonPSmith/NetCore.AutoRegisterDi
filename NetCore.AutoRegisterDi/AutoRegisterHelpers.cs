@@ -1,5 +1,6 @@
 ﻿// Copyright (c) 2018 Inventory Innovations, Inc. - build by Jon P Smith (GitHub JonPSmith)
-// Licensed under MIT licence. See License.txt in the project root for license information.
+// Licensed under MIT license. See License.txt in the project root for license information.
+// Code added/updated by Fedor Zhekov, GitHub: @ZFi88
 
 using System;
 using System.Linq;
@@ -49,8 +50,10 @@ namespace NetCore.AutoRegisterDi
         /// This registers the classes against any public interfaces (other than IDisposable) implemented by the class
         /// </summary>
         /// <param name="autoRegData">AutoRegister data produced by <see cref="RegisterAssemblyPublicNonGenericClasses"/></param> method
+        /// <param name="lifetime">Allows you to define the lifetime of the service - defaults to ServiceLifetime.Transient</param>
         /// <returns></returns>
-        public static IServiceCollection AsPublicImplementedInterfaces(this AutoRegisterData autoRegData)
+        public static IServiceCollection AsPublicImplementedInterfaces(this AutoRegisterData autoRegData,
+            ServiceLifetime lifetime = ServiceLifetime.Transient)
         {
             if (autoRegData == null) throw new ArgumentNullException(nameof(autoRegData));
             foreach (var classType in (autoRegData.TypeFilter == null
@@ -61,10 +64,9 @@ namespace NetCore.AutoRegisterDi
                     throw new ArgumentException($"Class {classType.FullName} has multiple life time attributes");
 
                 var interfaces = classType.GetTypeInfo().ImplementedInterfaces;
-                var lifetime = classType.GetTypeLiteTime();
                 foreach (var infc in interfaces.Where(i => i != typeof(IDisposable) && i.IsPublic && !i.IsNested))
                 {
-                    autoRegData.Services.Add(new ServiceDescriptor(infc, classType, lifetime));
+                    autoRegData.Services.Add(new ServiceDescriptor(infc, classType, classType.GetLifetimeForClass(lifetime)));
                 }
             }
 

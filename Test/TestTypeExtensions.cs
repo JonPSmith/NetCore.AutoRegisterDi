@@ -2,12 +2,15 @@ namespace Test
 {
     using Microsoft.Extensions.DependencyInjection;
     using NetCore.AutoRegisterDi;
-    using NetCore.AutoRegisterDi.Attributes;
     using Xunit;
     using Xunit.Extensions.AssertExtensions;
 
     public class TestTypeExtensions
     {
+        private class NormalClass
+        {
+        }
+
         [DoNotAutoRegister]
         private class Ignore
         {
@@ -53,21 +56,27 @@ namespace Test
         }
 
         [Fact]
+        public void GetDefaultLifetime()
+        {
+            typeof(NormalClass).GetLifetimeForClass(ServiceLifetime.Transient).ShouldEqual(ServiceLifetime.Transient);
+        }
+
+        [Fact]
         public void GetScopeLifetime()
         {
-            typeof(Scope).GetTypeLiteTime().ShouldEqual(ServiceLifetime.Scoped);
+            typeof(Scope).GetLifetimeForClass(ServiceLifetime.Transient).ShouldEqual(ServiceLifetime.Scoped);
         }
 
         [Fact]
         public void GetTransientLifetime()
         {
-            typeof(Transient).GetTypeLiteTime().ShouldEqual(ServiceLifetime.Transient);
+            typeof(Transient).GetLifetimeForClass(ServiceLifetime.Scoped).ShouldEqual(ServiceLifetime.Transient);
         }
 
         [Fact]
         public void GetSingletonLifetime()
         {
-            typeof(Singleton).GetTypeLiteTime().ShouldEqual(ServiceLifetime.Singleton);
+            typeof(Singleton).GetLifetimeForClass(ServiceLifetime.Transient).ShouldEqual(ServiceLifetime.Singleton);
         }
     }
 }

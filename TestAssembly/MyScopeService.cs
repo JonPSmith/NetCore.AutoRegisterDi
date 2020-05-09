@@ -1,7 +1,7 @@
+using NetCore.AutoRegisterDi;
+
 namespace TestAssembly
 {
-    using NetCore.AutoRegisterDi.Attributes;
-
     [RegisterAsScoped]
     public class MyScopeService : IMyService
     {

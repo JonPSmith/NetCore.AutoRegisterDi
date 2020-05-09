@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
 using NetCore.AutoRegisterDi;
+using Test.DifferentServices;
 using TestAssembly;
 using Xunit;
 using Xunit.Extensions.AssertExtensions;
@@ -28,11 +29,11 @@ namespace Test
             autoRegData.TypesToConsider.ShouldEqual(
                 new[]
                 {
-                    typeof(LocalScopeService), typeof(LocalService),
-                    typeof(LocalSingletonService), typeof(LocalTransientService),
                     typeof(TestAutoRegisterDiCallingAssembly),
                     typeof(TestAutoRegisterDiDifferentAssembly),
-                    typeof(TestTypeExtensions)
+                    typeof(TestTypeExtensions),
+                    typeof(LocalScopeService), typeof(LocalService),
+                    typeof(LocalSingletonService), typeof(LocalTransientService),
                 });
         }
 
@@ -48,8 +49,13 @@ namespace Test
 
             //VERIFY
             service.Count.ShouldEqual(4);
-            service.Contains(
-                new ServiceDescriptor(typeof(ILocalService), typeof(LocalService), ServiceLifetime.Transient),
+            service.Contains(new ServiceDescriptor(typeof(ILocalService), typeof(LocalService), ServiceLifetime.Transient),
+                new CheckDescriptor()).ShouldBeTrue();
+            service.Contains(new ServiceDescriptor(typeof(ILocalService), typeof(LocalSingletonService), ServiceLifetime.Singleton),
+                new CheckDescriptor()).ShouldBeTrue();
+            service.Contains(new ServiceDescriptor(typeof(ILocalService), typeof(LocalTransientService), ServiceLifetime.Transient),
+                new CheckDescriptor()).ShouldBeTrue();
+            service.Contains(new ServiceDescriptor(typeof(ILocalService), typeof(LocalScopeService), ServiceLifetime.Scoped),
                 new CheckDescriptor()).ShouldBeTrue();
         }
 
@@ -61,12 +67,17 @@ namespace Test
 
             //ATTEMPT
             service.RegisterAssemblyPublicNonGenericClasses()
-                .AsPublicImplementedInterfaces();
+                .AsPublicImplementedInterfaces(ServiceLifetime.Singleton);
 
             //VERIFY
             service.Count.ShouldEqual(4);
-            service.Contains(
-                new ServiceDescriptor(typeof(ILocalService), typeof(LocalScopeService), ServiceLifetime.Scoped),
+            service.Contains(new ServiceDescriptor(typeof(ILocalService), typeof(LocalService), ServiceLifetime.Singleton),
+                new CheckDescriptor()).ShouldBeTrue();
+            service.Contains(new ServiceDescriptor(typeof(ILocalService), typeof(LocalSingletonService), ServiceLifetime.Singleton),
+                new CheckDescriptor()).ShouldBeTrue();
+            service.Contains(new ServiceDescriptor(typeof(ILocalService), typeof(LocalTransientService), ServiceLifetime.Transient),
+                new CheckDescriptor()).ShouldBeTrue();
+            service.Contains(new ServiceDescriptor(typeof(ILocalService), typeof(LocalScopeService), ServiceLifetime.Scoped),
                 new CheckDescriptor()).ShouldBeTrue();
         }
 

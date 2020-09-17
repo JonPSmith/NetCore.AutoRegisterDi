@@ -1,6 +1,6 @@
 # NetCore.AutoRegisterDi
 
-This [NuGet library](https://www.nuget.org/packages/NetCore.AutoRegisterDi/) contains an extension method to scan an assemby and register all the public classes against their implemented interfaces(s) into the Microsoft.Extensions.DependencyInjection dependency injection provider. 
+This [NuGet library](https://www.nuget.org/packages/NetCore.AutoRegisterDi/) contains an extension method to scan an assemby and register all the non-generic public classes (see [excluded type](https://github.com/JonPSmith/NetCore.AutoRegisterDi#1-the-registerassemblypublicnongenericclasses-method) against their implemented interfaces(s) into the Microsoft.Extensions.DependencyInjection dependency injection provider. 
 
 I have written a simple version of AutoFac's `RegisterAssemblyTypes` method that works directly with Microsoft's DI provider. Here are an example of me using this with ASP.NET Core.
 
@@ -58,11 +58,13 @@ I therefore implemented a similar (but not exactly the same) feature for the
 Microsoft.Extensions.DependencyInjection library.
 
 
-
 ### Detailed information
 
 There are four parts:
-1. `RegisterAssemblyPublicNonGenericClasses`, which finds all the classes.
+1. `RegisterAssemblyPublicNonGenericClasses`, which finds all the public classes that : 
+    - Aren't abstract
+    - Aren't a generic type, e.g. MyClass\<AnotherClass\>
+    - Isn't nested. e.g. It won't look at classes defined inside other classes
 2. An options `Where` method, which allows you to filter the classes to be considered.
 3. The `AsPublicImplementedInterfaces` method which finds ant interfaces on a class and registers those interfaces as pointing to the class.
 4. Various attributes that you can add to your classes to tell `NetCore.AutoRegisterDi` what to do:

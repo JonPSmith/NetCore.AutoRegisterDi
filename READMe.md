@@ -1,6 +1,6 @@
 # NetCore.AutoRegisterDi
 
-This [NuGet library](https://www.nuget.org/packages/NetCore.AutoRegisterDi/) contains an extension method to scan an assemby and register all the non-generic public classes (see [excluded type](https://github.com/JonPSmith/NetCore.AutoRegisterDi#1-the-registerassemblypublicnongenericclasses-method) against their implemented interfaces(s) into the Microsoft.Extensions.DependencyInjection dependency injection provider. 
+This [NuGet library](https://www.nuget.org/packages/NetCore.AutoRegisterDi/) contains an extension method to scan an assemby and register all the non-generic public classes (see [excluded type](https://github.com/JonPSmith/NetCore.AutoRegisterDi#1-the-registerassemblypublicnongenericclasses-method)) against their implemented interfaces(s) into the `Microsoft.Extensions.DependencyInjection` dependency injection provider. 
 
 I have written a simple version of AutoFac's `RegisterAssemblyTypes` method that works directly with Microsoft's DI provider. Here are an example of me using this with ASP.NET Core.
 

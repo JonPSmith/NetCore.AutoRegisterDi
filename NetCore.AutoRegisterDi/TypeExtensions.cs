@@ -21,13 +21,22 @@ namespace NetCore.AutoRegisterDi
     internal static class TypeExtensions
     {
         /// <summary>
-        /// Check if type marked by <see cref="DoNotAutoRegisterAttribute"/>
+        ///     Check if type is marked by <see cref="DoNotAutoRegisterAttribute" /> or if type is an exception and not marked with
+        ///     any <see cref="RegisterWithLifetimeAttribute" />.
         /// </summary>
         /// <param name="type">type</param>
         public static bool IsIgnoredType(this Type type)
         {
             var doNotAutoRegisterAttribute = type.GetCustomAttribute<DoNotAutoRegisterAttribute>();
-            return doNotAutoRegisterAttribute != null;
+            var isManuallyExcluded = doNotAutoRegisterAttribute != null;
+
+            if (isManuallyExcluded)
+            {
+                return true;
+            }
+
+            var isException = type.IsSubclassOf(typeof(Exception));
+            return isException && type.GetCustomAttribute<RegisterWithLifetimeAttribute>() == null;
         }
 
         /// <summary>

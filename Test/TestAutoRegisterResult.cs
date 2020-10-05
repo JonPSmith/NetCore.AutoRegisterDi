@@ -6,12 +6,19 @@ using Microsoft.Extensions.DependencyInjection;
 using NetCore.AutoRegisterDi;
 using Test.DifferentServices;
 using Xunit;
+using Xunit.Abstractions;
 using Xunit.Extensions.AssertExtensions;
 
 namespace Test
 {
     public class TestAutoRegisterResult
     {
+        private ITestOutputHelper _output;
+
+        public TestAutoRegisterResult(ITestOutputHelper output)
+        {
+            _output = output;
+        }
 
         [Fact]
         public void TestAsPublicImplementedInterfacesMyService()
@@ -34,6 +41,11 @@ namespace Test
             resultsAsString.ShouldContain("LocalSingletonService : ILocalService (Singleton)");
             resultsAsString.ShouldContain("LocalTransientService : ILocalService (Transient)");
             resultsAsString.ShouldContain("LocalScopeService : ILocalService (Scoped)");
+
+            foreach (var result in resultsAsString)
+            {
+                _output.WriteLine(result);
+            }
         }
 
         [Fact]

@@ -31,11 +31,13 @@ namespace Test
                 {
                     typeof(TestAutoRegisterDiCallingAssembly),
                     typeof(TestAutoRegisterDiDifferentAssembly),
+                    typeof(TestAutoRegisterResult),
                     typeof(TestTypeExtensions),
                     typeof(ClassWithJustIDisposable),
                     typeof(ClassWithJustISerializable),
                     typeof(LocalScopeService), typeof(LocalService),
                     typeof(LocalSingletonService), typeof(LocalTransientService),
+                    typeof(MyException)
                 });
         }
 

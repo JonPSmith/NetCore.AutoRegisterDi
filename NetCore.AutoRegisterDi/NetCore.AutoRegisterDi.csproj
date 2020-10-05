@@ -14,14 +14,14 @@
     <RepositoryType>GitHub</RepositoryType>
     <PackageTags>NetCore DependencyInjection di</PackageTags>
     <Authors>Jon P Smith</Authors>
-    <Copyright>Copyright (c) 2018 Selective Analytics Ltd.</Copyright>
+    <Copyright>Copyright (c) 2020 Selective Analytics Ltd.</Copyright>
     <Company>Selective Analytics</Company>
     <Description>Extension method to find/register classes in an assembly into Microsoft.Extensions.DependencyInjection</Description>
     <PackageReleaseNotes>
-      - New feature: IgnoreThisInterface method allows you to state that the given interface will not be registered against a class
-      - Improvement: Adds ISerializable interface base list interfaces to ignore (IDisposable is already in base ignore list)
-      - Improvement: You can use muliple have Where methods to filter
-      - Improvement: Returns a list of the classes that were registered with the DI provider (and what interfaces were ignored)
+      - New feature: IgnoreThisInterface method adds a interface to its interface ignore list.
+      - Improvement: Added ISerializable interface to the default interface ignore list (IDisposable is already in base ignore list)
+      - Improvement: You can use muliple have Where methods to filter out classes
+      - Improvement: Returns a list of the classes/interfaces registered with the DI provider (useful for debugging)
     </PackageReleaseNotes>
     <PackageIconUrl>https://raw.githubusercontent.com/JonPSmith/NetCore.AutoRegisterDi/master/AutoRegisterDiIcon128.png</PackageIconUrl>
   </PropertyGroup>

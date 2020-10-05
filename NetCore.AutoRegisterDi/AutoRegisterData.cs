@@ -1,14 +1,15 @@
-﻿// Copyright (c) 2018 Inventory Innovations, Inc. - build by Jon P Smith (GitHub JonPSmith)
-// Licensed under MIT licence. See License.txt in the project root for license information.
+﻿// Copyright (c) 2020 Jon P Smith, GitHub: JonPSmith, web: http://www.thereformedprogrammer.net/
+// Licensed under MIT license. See License.txt in the project root for license information.
 
 using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace NetCore.AutoRegisterDi
 {
     /// <summary>
-    /// This holds the data passed between the various stages of the AutoRegisterDi extension methods
+    /// This holds the data passed between the the various Stages
     /// </summary>
     public class AutoRegisterData
     {
@@ -34,9 +35,13 @@ namespace NetCore.AutoRegisterDi
         public IEnumerable<Type> TypesToConsider { get; }
 
         /// <summary>
-        /// This holds an options test method which will be applied using a Where clause to filter the classes
-        /// If the TypeFiler is null, then no filtering is done
+        /// 
         /// </summary>
-        public Func<Type, bool> TypeFilter { get; set; }
+        internal List<Type> InterfacesToIgnore { get; set; }
+            = new List<Type>
+            {
+                typeof(IDisposable),
+                typeof(ISerializable)
+            };
     }
 }

@@ -3,12 +3,8 @@
 
 namespace Test.DifferentServices
 {
-    public class LocalService : ILocalService, IAnotherInterface
+    public interface IAnotherInterface
     {
-        public bool IsPositive(int i)
-        {
-            return i >= 0;
-        }
-
+        bool IsPositive(int i);
     }
 }

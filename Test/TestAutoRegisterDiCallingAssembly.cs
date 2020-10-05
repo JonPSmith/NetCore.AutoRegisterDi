@@ -1,5 +1,5 @@
-﻿// Copyright (c) 2018 Inventory Innovations, Inc. - build by Jon P Smith (GitHub JonPSmith)
-// Licensed under MIT licence. See License.txt in the project root for license information.
+﻿// Copyright (c) 2020 Jon P Smith, GitHub: JonPSmith, web: http://www.thereformedprogrammer.net/
+// Licensed under MIT license. See License.txt in the project root for license information.
 
 using System;
 using System.Collections.Generic;
@@ -32,6 +32,8 @@ namespace Test
                     typeof(TestAutoRegisterDiCallingAssembly),
                     typeof(TestAutoRegisterDiDifferentAssembly),
                     typeof(TestTypeExtensions),
+                    typeof(ClassWithJustIDisposable),
+                    typeof(ClassWithJustISerializable),
                     typeof(LocalScopeService), typeof(LocalService),
                     typeof(LocalSingletonService), typeof(LocalTransientService),
                 });
@@ -48,8 +50,10 @@ namespace Test
                 .AsPublicImplementedInterfaces();
 
             //VERIFY
-            service.Count.ShouldEqual(4);
+            service.Count.ShouldEqual(5);
             service.Contains(new ServiceDescriptor(typeof(ILocalService), typeof(LocalService), ServiceLifetime.Transient),
+                new CheckDescriptor()).ShouldBeTrue();
+            service.Contains(new ServiceDescriptor(typeof(IAnotherInterface), typeof(LocalService), ServiceLifetime.Transient),
                 new CheckDescriptor()).ShouldBeTrue();
             service.Contains(new ServiceDescriptor(typeof(ILocalService), typeof(LocalSingletonService), ServiceLifetime.Singleton),
                 new CheckDescriptor()).ShouldBeTrue();
@@ -70,8 +74,10 @@ namespace Test
                 .AsPublicImplementedInterfaces(ServiceLifetime.Singleton);
 
             //VERIFY
-            service.Count.ShouldEqual(4);
+            service.Count.ShouldEqual(5);
             service.Contains(new ServiceDescriptor(typeof(ILocalService), typeof(LocalService), ServiceLifetime.Singleton),
+                new CheckDescriptor()).ShouldBeTrue();
+            service.Contains(new ServiceDescriptor(typeof(IAnotherInterface), typeof(LocalService), ServiceLifetime.Singleton),
                 new CheckDescriptor()).ShouldBeTrue();
             service.Contains(new ServiceDescriptor(typeof(ILocalService), typeof(LocalSingletonService), ServiceLifetime.Singleton),
                 new CheckDescriptor()).ShouldBeTrue();
@@ -82,18 +88,65 @@ namespace Test
         }
 
         [Fact]
-        public void TestWhere()
+        public void TestSingleWhere()
         {
             //SETUP
             var service = new ServiceCollection();
 
             //ATTEMPT
             service.RegisterAssemblyPublicNonGenericClasses()
-                .Where(x => x.Name == nameof(MyService))
+                .Where(x => x.Name == nameof(LocalService))
                 .AsPublicImplementedInterfaces();
 
             //VERIFY
-            service.Count.ShouldEqual(0);
+            service.Count.ShouldEqual(2);
+            service.Contains(new ServiceDescriptor(typeof(ILocalService), typeof(LocalService), ServiceLifetime.Transient),
+                new CheckDescriptor()).ShouldBeTrue();
+            service.Contains(new ServiceDescriptor(typeof(IAnotherInterface), typeof(LocalService), ServiceLifetime.Transient),
+                new CheckDescriptor()).ShouldBeTrue();
+        }
+
+        [Fact]
+        public void TestMultipleWhere()
+        {
+            //SETUP
+            var service = new ServiceCollection();
+
+            //ATTEMPT
+            service.RegisterAssemblyPublicNonGenericClasses()
+                .Where(x => x.Name != nameof(LocalService))
+                .Where(x => x.Name != nameof(LocalScopeService))
+                .AsPublicImplementedInterfaces();
+
+            //VERIFY
+            service.Count.ShouldEqual(2);
+            service.Contains(new ServiceDescriptor(typeof(ILocalService), typeof(LocalSingletonService), ServiceLifetime.Singleton),
+                new CheckDescriptor()).ShouldBeTrue();
+            service.Contains(new ServiceDescriptor(typeof(ILocalService), typeof(LocalTransientService), ServiceLifetime.Transient),
+                new CheckDescriptor()).ShouldBeTrue();
+        }
+
+        [Fact]
+        public void TestSingleIgnoreThisInterface()
+        {
+            //SETUP
+            var service = new ServiceCollection();
+
+            //ATTEMPT
+            service.RegisterAssemblyPublicNonGenericClasses()
+                .IgnoreThisInterface<IAnotherInterface>()
+                .AsPublicImplementedInterfaces();
+
+            //VERIFY
+            service.Count.ShouldEqual(4);
+            service.Contains(new ServiceDescriptor(typeof(ILocalService), typeof(LocalService), ServiceLifetime.Transient),
+                new CheckDescriptor()).ShouldBeTrue();
+            service.Contains(new ServiceDescriptor(typeof(ILocalService), typeof(LocalSingletonService), ServiceLifetime.Singleton),
+                new CheckDescriptor()).ShouldBeTrue();
+            service.Contains(new ServiceDescriptor(typeof(ILocalService), typeof(LocalTransientService), ServiceLifetime.Transient),
+                new CheckDescriptor()).ShouldBeTrue();
+            service.Contains(new ServiceDescriptor(typeof(ILocalService), typeof(LocalScopeService), ServiceLifetime.Scoped),
+                new CheckDescriptor()).ShouldBeTrue();
         }
 
         //-------------------------------------------------------------------------

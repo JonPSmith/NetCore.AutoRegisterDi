@@ -1,10 +1,12 @@
-﻿// Copyright (c) 2018 Inventory Innovations, Inc. - build by Jon P Smith (GitHub JonPSmith)
+﻿// Copyright (c) 2020 Jon P Smith, GitHub: JonPSmith, web: http://www.thereformedprogrammer.net/
 // Licensed under MIT license. See License.txt in the project root for license information.
 // Code added/updated by Fedor Zhekov, GitHub: @ZFi88
 
 using System;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Reflection;
+using System.Runtime.Serialization;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace NetCore.AutoRegisterDi
@@ -42,12 +44,27 @@ namespace NetCore.AutoRegisterDi
         public static AutoRegisterData Where(this AutoRegisterData autoRegData, Func<Type, bool> predicate)
         {
             if (autoRegData == null) throw new ArgumentNullException(nameof(autoRegData));
-            autoRegData.TypeFilter = predicate;
             return new AutoRegisterData(autoRegData.Services, autoRegData.TypesToConsider.Where(predicate));
         }
 
         /// <summary>
-        /// This registers the classes against any public interfaces (other than IDisposable) implemented by the class
+        /// This allows you to state that the given interface will not be registered against a class.
+        /// Useful if a class has a interface that you don't want registered against a class.
+        /// NOTE: the <see cref="IDisposable"/> and <see cref="ISerializable"/> interfaces are automatically ignored
+        /// </summary>
+        /// <typeparam name="TInterface">interface to be ignored</typeparam>
+        /// <param name="autoRegData"></param>
+        /// <returns></returns>
+        public static AutoRegisterData IgnoreThisInterface<TInterface>(this AutoRegisterData autoRegData)
+        {
+            if (!typeof(TInterface).IsInterface)
+                throw new InvalidOperationException($"The provided {typeof(TInterface).Name} mus be an interface");
+            autoRegData.InterfacesToIgnore.Add(typeof(TInterface));
+            return autoRegData;
+        }
+
+        /// <summary>
+        /// This registers the classes against any public interfaces (other than InterfacesToIgnore) implemented by the class
         /// </summary>
         /// <param name="autoRegData">AutoRegister data produced by <see cref="RegisterAssemblyPublicNonGenericClasses"/></param> method
         /// <param name="lifetime">Allows you to define the lifetime of the service - defaults to ServiceLifetime.Transient</param>
@@ -56,15 +73,15 @@ namespace NetCore.AutoRegisterDi
             ServiceLifetime lifetime = ServiceLifetime.Transient)
         {
             if (autoRegData == null) throw new ArgumentNullException(nameof(autoRegData));
-            foreach (var classType in (autoRegData.TypeFilter == null
-                ? autoRegData.TypesToConsider
-                : autoRegData.TypesToConsider.Where(autoRegData.TypeFilter)))
+            foreach (var classType in autoRegData.TypesToConsider)
             {
                 if (classType.IsMultipleLifetime())
                     throw new ArgumentException($"Class {classType.FullName} has multiple life time attributes");
 
                 var interfaces = classType.GetTypeInfo().ImplementedInterfaces;
-                foreach (var infc in interfaces.Where(i => i != typeof(IDisposable) && i.IsPublic && !i.IsNested))
+                foreach (var infc in interfaces.Where(i => 
+                    !autoRegData.InterfacesToIgnore.Contains(i) //This will not register the class with this interface
+                    && i.IsPublic && !i.IsNested))
                 {
                     autoRegData.Services.Add(new ServiceDescriptor(infc, classType, classType.GetLifetimeForClass(lifetime)));
                 }

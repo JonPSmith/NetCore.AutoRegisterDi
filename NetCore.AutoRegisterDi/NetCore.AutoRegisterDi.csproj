@@ -3,10 +3,10 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageVersion>2.0.0</PackageVersion>
-    <Version>2.0.0</Version>
-    <AssemblyVersion>2.0.0.0</AssemblyVersion>
-    <FileVersion>2.0.0.0</FileVersion>
+    <PackageVersion>2.1.0</PackageVersion>
+    <Version>2.1.0</Version>
+    <AssemblyVersion>2.1.0.0</AssemblyVersion>
+    <FileVersion>2.1.0.0</FileVersion>
     <PackageId>NetCore.AutoRegisterDi</PackageId>
     <PackageProjectUrl>https://github.com/JonPSmith/NetCore.AutoRegisterDi</PackageProjectUrl>
     <PackageLicenseUrl>https://raw.githubusercontent.com/JonPSmith/NetCore.AutoRegisterDi/master/LICENCE.txt</PackageLicenseUrl>
@@ -17,7 +17,12 @@
     <Copyright>Copyright (c) 2018 Selective Analytics Ltd.</Copyright>
     <Company>Selective Analytics</Company>
     <Description>Extension method to find/register classes in an assembly into Microsoft.Extensions.DependencyInjection</Description>
-    <PackageReleaseNotes>New Feature: You can now set what ServiceLifetime your class has via Attributes - see README file.</PackageReleaseNotes>
+    <PackageReleaseNotes>
+      - New feature: IgnoreThisInterface method allows you to state that the given interface will not be registered against a class
+      - Improvement: Adds ISerializable interface base list interfaces to ignore (IDisposable is already in base ignore list)
+      - Improvement: You can use muliple have Where methods to filter
+      - Improvement: Returns a list of the classes that were registered with the DI provider (and what interfaces were ignored)
+    </PackageReleaseNotes>
     <PackageIconUrl>https://raw.githubusercontent.com/JonPSmith/NetCore.AutoRegisterDi/master/AutoRegisterDiIcon128.png</PackageIconUrl>
   </PropertyGroup>
 

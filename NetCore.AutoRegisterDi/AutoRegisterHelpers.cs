@@ -3,6 +3,8 @@
 // Code added/updated by Fedor Zhekov, GitHub: @ZFi88
 
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http.Headers;
 using System.Reflection;
@@ -37,6 +39,7 @@ namespace NetCore.AutoRegisterDi
         /// <summary>
         /// This allows you to filter the classes in some way.
         /// For instance <code>Where(c =\> c.Name.EndsWith("Service")</code> would only register classes who's name ended in "Service"
+        /// NOTE: You can have multiple calls to this method to apply a series off filters
         /// </summary>
         /// <param name="autoRegData"></param>
         /// <param name="predicate">A function that will take a type and return true if that type should be included</param>
@@ -69,10 +72,16 @@ namespace NetCore.AutoRegisterDi
         /// <param name="autoRegData">AutoRegister data produced by <see cref="RegisterAssemblyPublicNonGenericClasses"/></param> method
         /// <param name="lifetime">Allows you to define the lifetime of the service - defaults to ServiceLifetime.Transient</param>
         /// <returns></returns>
-        public static IServiceCollection AsPublicImplementedInterfaces(this AutoRegisterData autoRegData,
+        public static IList<AutoRegisteredResult> AsPublicImplementedInterfaces(this AutoRegisterData autoRegData,
             ServiceLifetime lifetime = ServiceLifetime.Transient)
         {
             if (autoRegData == null) throw new ArgumentNullException(nameof(autoRegData));
+
+            //This lists all the ignored interfaces
+            var result = autoRegData.InterfacesToIgnore.Select(x =>
+                new AutoRegisteredResult(null, x, ServiceLifetime.Singleton))
+                .ToList();
+
             foreach (var classType in autoRegData.TypesToConsider)
             {
                 if (classType.IsMultipleLifetime())
@@ -83,11 +92,13 @@ namespace NetCore.AutoRegisterDi
                     !autoRegData.InterfacesToIgnore.Contains(i) //This will not register the class with this interface
                     && i.IsPublic && !i.IsNested))
                 {
-                    autoRegData.Services.Add(new ServiceDescriptor(infc, classType, classType.GetLifetimeForClass(lifetime)));
+                    var lifetimeForClass = classType.GetLifetimeForClass(lifetime);
+                    autoRegData.Services.Add(new ServiceDescriptor(infc, classType, lifetimeForClass));
+                    result.Add(new AutoRegisteredResult(classType, infc, lifetimeForClass));
                 }
             }
 
-            return autoRegData.Services;
+            return result;
         }
     }
 }

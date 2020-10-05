@@ -18,7 +18,7 @@ namespace NetCore.AutoRegisterDi
         /// </summary>
         /// <param name="services"></param>
         /// <param name="typesToConsider"></param>
-        public AutoRegisterData(IServiceCollection services, IEnumerable<Type> typesToConsider)
+        internal AutoRegisterData(IServiceCollection services, IEnumerable<Type> typesToConsider)
         {
             Services = services ?? throw new ArgumentNullException(nameof(services));
             TypesToConsider = typesToConsider ?? throw new ArgumentNullException(nameof(typesToConsider));

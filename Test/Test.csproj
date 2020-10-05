@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="JetBrains.DotMemoryUnit" Version="3.1.20200127.214830" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="2.1.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.7.0" />
     <PackageReference Include="xunit" Version="2.3.1" />

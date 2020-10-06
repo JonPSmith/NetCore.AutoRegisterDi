@@ -27,7 +27,8 @@ namespace Test
             var service = new ServiceCollection();
 
             //ATTEMPT
-            var results = service.RegisterAssemblyPublicNonGenericClasses()
+            var results = service
+                .RegisterAssemblyPublicNonGenericClasses()
                 .AsPublicImplementedInterfaces();
 
             //VERIFY
@@ -55,7 +56,8 @@ namespace Test
             var service = new ServiceCollection();
 
             //ATTEMPT
-            var results = service.RegisterAssemblyPublicNonGenericClasses()
+            var results = service
+                .RegisterAssemblyPublicNonGenericClasses()
                 .IgnoreThisInterface<IAnotherInterface>()
                 .AsPublicImplementedInterfaces();
 

@@ -15,7 +15,7 @@ public void ConfigureServices(IServiceCollection services)
 {
    //... other configure code removed
 
-   service.RegisterAssemblyPublicNonGenericClasses()
+   services.RegisterAssemblyPublicNonGenericClasses()
      .Where(c => c.Name.EndsWith("Service"))  //optional
      .IgnoreThisInterface<IMyInterface>()     //optional
      .AsPublicImplementedInterfaces();
@@ -35,7 +35,7 @@ public void ConfigureServices(IServiceCollection services)
         Assembly.GetAssembly(typeof(MyServiceInAssembly2))
    };   
 
-   service.RegisterAssemblyPublicNonGenericClasses(assembliesToScan)
+   services.RegisterAssemblyPublicNonGenericClasses(assembliesToScan)
      .Where(c => c.Name.EndsWith("Service"))  //optional
      .IgnoreThisInterface<IMyInterface>()     //optional
      .AsPublicImplementedInterfaces(); 

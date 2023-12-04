@@ -1,6 +1,8 @@
 ﻿// Copyright (c) 2018 Inventory Innovations, Inc. - build by Jon P Smith (GitHub JonPSmith)
 // Licensed under MIT licence. See License.txt in the project root for license information.
 
+using Xunit.Abstractions;
+
 namespace Test
 {
     using System;
@@ -17,6 +19,13 @@ namespace Test
 
     public class TestAutoRegisterDiDifferentAssembly
     {
+        private readonly ITestOutputHelper _output;
+
+        public TestAutoRegisterDiDifferentAssembly(ITestOutputHelper output)
+        {
+            _output = output;
+        }
+
         [Fact]
         public void TestRegisterAssemblyPublicNonGenericClasses()
         {
@@ -34,45 +43,117 @@ namespace Test
                     typeof(ClassWithNestedService),
                     typeof(MyOtherScopeService), typeof(MyOtherService),
                     typeof(MyScopeService), typeof(MyService),
+                    typeof(RecordNoInterface), typeof(RecordWithInterface), 
                     typeof(UseService)
                 });
         }
 
         [Fact]
-        public void TestAsPublicImplementedInterfacesMyService()
+        public void TestAsPublicImplementedInterfaces_Default()
         {
             //SETUP
             var service = new ServiceCollection();
 
             //ATTEMPT
-            service.RegisterAssemblyPublicNonGenericClasses(Assembly.GetAssembly(typeof(MyService)))
+            var logs= service.RegisterAssemblyPublicNonGenericClasses(Assembly.GetAssembly(typeof(MyService)))
                 .AsPublicImplementedInterfaces();
 
             //VERIFY
-            service.Count.ShouldEqual(4);
-            service.Contains(new ServiceDescriptor(typeof(IMyService), typeof(MyService), ServiceLifetime.Transient),
+            foreach (var log in logs)
+            {
+                _output.WriteLine(log.ToString());
+            }
+            service.Count.ShouldEqual(7);
+            service.Contains(
+                new ServiceDescriptor(typeof(IMyOtherService), typeof(MyOtherScopeService), ServiceLifetime.Transient),
                 new CheckDescriptor()).ShouldBeTrue();
             service.Contains(
                 new ServiceDescriptor(typeof(IMyOtherService), typeof(MyOtherService), ServiceLifetime.Transient),
                 new CheckDescriptor()).ShouldBeTrue();
+            service.Contains(
+                new ServiceDescriptor(typeof(IMyService), typeof(MyScopeService), ServiceLifetime.Scoped),
+                new CheckDescriptor()).ShouldBeTrue();
+            service.Contains(
+                new ServiceDescriptor(typeof(IMyService), typeof(MyService), ServiceLifetime.Transient),
+                new CheckDescriptor()).ShouldBeTrue();
+            service.Contains(
+                new ServiceDescriptor(typeof(IRecordWithInterface), typeof(RecordWithInterface), ServiceLifetime.Transient),
+                new CheckDescriptor()).ShouldBeTrue();
+            //records
+            service.Contains(
+                new ServiceDescriptor(typeof(IEquatable<RecordWithInterface>), typeof(RecordWithInterface), ServiceLifetime.Transient),
+                new CheckDescriptor()).ShouldBeTrue();
+            service.Contains(
+                new ServiceDescriptor(typeof(IEquatable<RecordNoInterface>), typeof(RecordNoInterface), ServiceLifetime.Transient),
+                new CheckDescriptor()).ShouldBeTrue();
         }
 
         [Fact]
-        public void TestAsPublicImplementedInterfacesMyServiceSetLifetime()
+        public void TestAsPublicImplementedInterfaces_IgnoreIMyOtherService()
         {
             //SETUP
             var service = new ServiceCollection();
 
             //ATTEMPT
-            service.RegisterAssemblyPublicNonGenericClasses(Assembly.GetAssembly(typeof(MyService)))
+            var logs = service.RegisterAssemblyPublicNonGenericClasses(Assembly.GetAssembly(typeof(MyService)))
+                .IgnoreThisInterface<IMyOtherService>()
                 .AsPublicImplementedInterfaces();
 
             //VERIFY
-            service.Count.ShouldEqual(4);
-            service.Contains(new ServiceDescriptor(typeof(IMyService), typeof(MyScopeService), ServiceLifetime.Scoped),
+            foreach (var log in logs)
+            {
+                _output.WriteLine(log.ToString());
+            }
+            service.Count.ShouldEqual(5);
+            service.Contains(
+                new ServiceDescriptor(typeof(IMyService), typeof(MyScopeService), ServiceLifetime.Scoped),
                 new CheckDescriptor()).ShouldBeTrue();
             service.Contains(
-                new ServiceDescriptor(typeof(IMyOtherService), typeof(MyOtherScopeService), ServiceLifetime.Scoped),
+                new ServiceDescriptor(typeof(IMyService), typeof(MyService), ServiceLifetime.Transient),
+                new CheckDescriptor()).ShouldBeTrue();
+            service.Contains(
+                new ServiceDescriptor(typeof(IRecordWithInterface), typeof(RecordWithInterface), ServiceLifetime.Transient),
+                new CheckDescriptor()).ShouldBeTrue();
+            //records
+            service.Contains(
+                new ServiceDescriptor(typeof(IEquatable<RecordWithInterface>), typeof(RecordWithInterface), ServiceLifetime.Transient),
+                new CheckDescriptor()).ShouldBeTrue();
+            service.Contains(
+                new ServiceDescriptor(typeof(IEquatable<RecordNoInterface>), typeof(RecordNoInterface), ServiceLifetime.Transient),
+                new CheckDescriptor()).ShouldBeTrue();
+        }
+
+        [Fact]
+        public void TestAsPublicImplementedInterfaces_IgnoreIEquatable()
+        {
+            //SETUP
+            var service = new ServiceCollection();
+
+            //ATTEMPT
+            var logs = service.RegisterAssemblyPublicNonGenericClasses(Assembly.GetAssembly(typeof(MyService)))
+                .IgnoreThisGenericInterface(typeof(IEquatable<>))
+                .AsPublicImplementedInterfaces();
+
+            //VERIFY
+            foreach (var log in logs)
+            {
+                _output.WriteLine(log.ToString());
+            }
+            service.Count.ShouldEqual(5);
+            service.Contains(
+                new ServiceDescriptor(typeof(IMyOtherService), typeof(MyOtherScopeService), ServiceLifetime.Transient),
+                new CheckDescriptor()).ShouldBeTrue();
+            service.Contains(
+                new ServiceDescriptor(typeof(IMyOtherService), typeof(MyOtherService), ServiceLifetime.Transient),
+                new CheckDescriptor()).ShouldBeTrue();
+            service.Contains(
+                new ServiceDescriptor(typeof(IMyService), typeof(MyScopeService), ServiceLifetime.Scoped),
+                new CheckDescriptor()).ShouldBeTrue();
+            service.Contains(
+                new ServiceDescriptor(typeof(IMyService), typeof(MyService), ServiceLifetime.Transient),
+                new CheckDescriptor()).ShouldBeTrue();
+            service.Contains(
+                new ServiceDescriptor(typeof(IRecordWithInterface), typeof(RecordWithInterface), ServiceLifetime.Transient),
                 new CheckDescriptor()).ShouldBeTrue();
         }
 
@@ -83,11 +164,15 @@ namespace Test
             var service = new ServiceCollection();
 
             //ATTEMPT
-            service.RegisterAssemblyPublicNonGenericClasses(Assembly.GetAssembly(typeof(MyService)))
+            var logs = service.RegisterAssemblyPublicNonGenericClasses(Assembly.GetAssembly(typeof(MyService)))
                 .Where(x => x.Name == nameof(MyService))
                 .AsPublicImplementedInterfaces();
 
             //VERIFY
+            foreach (var log in logs)
+            {
+                _output.WriteLine(log.ToString());
+            }
             service.Count.ShouldEqual(1);
             service.Contains(new ServiceDescriptor(typeof(IMyService), typeof(MyService), ServiceLifetime.Transient),
                 new CheckDescriptor()).ShouldBeTrue();

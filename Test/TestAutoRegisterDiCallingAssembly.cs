@@ -7,7 +7,6 @@ using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
 using NetCore.AutoRegisterDi;
 using Test.DifferentServices;
-using TestAssembly;
 using Xunit;
 using Xunit.Extensions.AssertExtensions;
 

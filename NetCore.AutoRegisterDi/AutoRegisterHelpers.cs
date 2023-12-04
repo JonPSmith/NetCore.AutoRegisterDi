@@ -3,10 +3,8 @@
 // Code added/updated by Fedor Zhekov, GitHub: @ZFi88
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http.Headers;
 using System.Reflection;
 using System.Runtime.Serialization;
 using Microsoft.Extensions.DependencyInjection;
@@ -52,7 +50,8 @@ namespace NetCore.AutoRegisterDi
 
         /// <summary>
         /// This allows you to state that the given interface will not be registered against a class.
-        /// Useful if a class has a interface that you don't want registered against a class.
+        /// Useful if a class has an interface that you don't want registered against a class
+        ///  fully defined interfaces, e.g. MyInterface, IList{MyClass}, to be ignored
         /// NOTE: the <see cref="IDisposable"/> and <see cref="ISerializable"/> interfaces are automatically ignored
         /// </summary>
         /// <typeparam name="TInterface">interface to be ignored</typeparam>
@@ -60,11 +59,39 @@ namespace NetCore.AutoRegisterDi
         /// <returns></returns>
         public static AutoRegisterData IgnoreThisInterface<TInterface>(this AutoRegisterData autoRegData)
         {
-            if (!typeof(TInterface).IsInterface)
-                throw new InvalidOperationException($"The provided {typeof(TInterface).Name} mus be an interface");
-            autoRegData.InterfacesToIgnore.Add(typeof(TInterface));
+            var interfaceType = typeof(TInterface);
+            if (!interfaceType.IsInterface)
+                throw new InvalidOperationException($"The provided {interfaceType.Name} must be an interface.");
+
+            autoRegData.FullyDefinedInterfacesToIgnore.Add(interfaceType);
             return autoRegData;
         }
+
+        /// <summary>
+        /// This allows you to state that the given interface will not be registered against a class.
+        /// Useful if a class has an interface that you don't want registered against a class. 
+        /// This method handles generic interface where the inner generic type arguments aren't defined, which will stop all interfaces
+        /// that uses the main type, e.g. IList{} would stop IList{int}, IList{string}, IList{AnotherClass}, etc.
+        /// </summary>
+        /// <param name="autoRegData"></param>
+        /// <param name="interfaceType"></param>
+        /// <returns></returns>
+        public static AutoRegisterData IgnoreThisGenericInterface(this AutoRegisterData autoRegData, Type interfaceType)
+        {
+            if (!interfaceType.IsInterface)
+                throw new InvalidOperationException($"The provided {interfaceType.Name} must be an interface.");
+            if (interfaceType.IsGenericType && !interfaceType.GenericTypeArguments.Any())
+            {
+                //This is Generic Type and it hasn't defined the inner generic type arguments, e.g. List<>
+                autoRegData.NotFullyDefinedInterfacesToIgnore.Add(interfaceType);
+            }
+            else
+            {
+                throw new InvalidOperationException($"The provided {interfaceType.Name} isn't a generic type or it is fully defined.");
+            }
+            return autoRegData;
+        }
+
 
         /// <summary>
         /// This registers the classes against any public interfaces (other than InterfacesToIgnore) implemented by the class
@@ -78,7 +105,7 @@ namespace NetCore.AutoRegisterDi
             if (autoRegData == null) throw new ArgumentNullException(nameof(autoRegData));
 
             //This lists all the ignored interfaces
-            var result = autoRegData.InterfacesToIgnore.Select(x =>
+            var result = autoRegData.InterfacesIgnored().Select(x =>
                 new AutoRegisteredResult(null, x, ServiceLifetime.Singleton))
                 .ToList();
 
@@ -87,10 +114,8 @@ namespace NetCore.AutoRegisterDi
                 if (classType.IsMultipleLifetime())
                     throw new ArgumentException($"Class {classType.FullName} has multiple life time attributes");
 
-                var interfaces = classType.GetTypeInfo().ImplementedInterfaces;
-                foreach (var infc in interfaces.Where(i => 
-                    !autoRegData.InterfacesToIgnore.Contains(i) //This will not register the class with this interface
-                    && i.IsPublic && !i.IsNested))
+                var interfaces = autoRegData.AllInterfacesForThisType(classType);
+                foreach (var infc in interfaces)
                 {
                     var lifetimeForClass = classType.GetLifetimeForClass(lifetime);
                     autoRegData.Services.Add(new ServiceDescriptor(infc, classType, lifetimeForClass));

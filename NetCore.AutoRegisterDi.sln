@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27703.2026
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34322.80
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NetCore.AutoRegisterDi", "NetCore.AutoRegisterDi\NetCore.AutoRegisterDi.csproj", "{FC8E0DD3-616E-4B90-9342-754E08593D4C}"
 EndProject
@@ -11,11 +11,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		LICENCE.txt = LICENCE.txt
 		READMe.md = READMe.md
+		ReleaseNotes.md = ReleaseNotes.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestAssembly", "TestAssembly\TestAssembly.csproj", "{2B4E7847-FFF8-472A-987D-6808B1DCE56F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestAssembly", "TestAssembly\TestAssembly.csproj", "{2B4E7847-FFF8-472A-987D-6808B1DCE56F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestBadAssembly", "TestBadAssembly\TestBadAssembly.csproj", "{0E090B35-D105-49C1-95BE-EDC2655D6399}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestBadAssembly", "TestBadAssembly\TestBadAssembly.csproj", "{0E090B35-D105-49C1-95BE-EDC2655D6399}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

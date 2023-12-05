@@ -68,10 +68,10 @@ namespace NetCore.AutoRegisterDi
         }
 
         /// <summary>
-        /// This allows you to state that the given interface will not be registered against a class.
-        /// Useful if a class has an interface that you don't want registered against a class. 
+        /// This allows you to state that the given generic interface will not be registered against a class.
         /// This method handles generic interface where the inner generic type arguments aren't defined, which will stop all interfaces
-        /// that uses the main type, e.g. IList{} would stop IList{int}, IList{string}, IList{AnotherClass}, etc.
+        /// This version is here so that you can stop a record's IEquatable{} being added to the DI service,
+        /// but it works for any generic interface. 
         /// </summary>
         /// <param name="autoRegData"></param>
         /// <param name="interfaceType"></param>

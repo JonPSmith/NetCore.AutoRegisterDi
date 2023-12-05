@@ -1,6 +1,7 @@
 ﻿// Copyright (c) 2018 Inventory Innovations, Inc. - build by Jon P Smith (GitHub JonPSmith)
 // Licensed under MIT licence. See License.txt in the project root for license information.
 
+using System.Runtime.Serialization;
 using Xunit.Abstractions;
 
 namespace Test
@@ -49,7 +50,7 @@ namespace Test
         }
 
         [Fact]
-        public void TestAsPublicImplementedInterfaces_Default()
+        public void TestAsPublicImplementedInterfaces_CheckServices()
         {
             //SETUP
             var service = new ServiceCollection();
@@ -65,7 +66,7 @@ namespace Test
             }
             service.Count.ShouldEqual(7);
             service.Contains(
-                new ServiceDescriptor(typeof(IMyOtherService), typeof(MyOtherScopeService), ServiceLifetime.Transient),
+                new ServiceDescriptor(typeof(IMyOtherService), typeof(MyOtherScopeService), ServiceLifetime.Scoped),
                 new CheckDescriptor()).ShouldBeTrue();
             service.Contains(
                 new ServiceDescriptor(typeof(IMyOtherService), typeof(MyOtherService), ServiceLifetime.Transient),
@@ -105,22 +106,14 @@ namespace Test
                 _output.WriteLine(log.ToString());
             }
             service.Count.ShouldEqual(5);
-            service.Contains(
-                new ServiceDescriptor(typeof(IMyService), typeof(MyScopeService), ServiceLifetime.Scoped),
-                new CheckDescriptor()).ShouldBeTrue();
-            service.Contains(
-                new ServiceDescriptor(typeof(IMyService), typeof(MyService), ServiceLifetime.Transient),
-                new CheckDescriptor()).ShouldBeTrue();
-            service.Contains(
-                new ServiceDescriptor(typeof(IRecordWithInterface), typeof(RecordWithInterface), ServiceLifetime.Transient),
-                new CheckDescriptor()).ShouldBeTrue();
-            //records
-            service.Contains(
-                new ServiceDescriptor(typeof(IEquatable<RecordWithInterface>), typeof(RecordWithInterface), ServiceLifetime.Transient),
-                new CheckDescriptor()).ShouldBeTrue();
-            service.Contains(
-                new ServiceDescriptor(typeof(IEquatable<RecordNoInterface>), typeof(RecordNoInterface), ServiceLifetime.Transient),
-                new CheckDescriptor()).ShouldBeTrue();
+            logs[0].ToString().ShouldEqual("The interface IDisposable is ignored");
+            logs[1].ToString().ShouldEqual("The interface ISerializable is ignored");
+            logs[2].ToString().ShouldEqual("The interface IMyOtherService is ignored");
+            logs[3].ToString().ShouldEqual("MyScopeService : IMyService (Scoped)");
+            logs[4].ToString().ShouldEqual("MyService : IMyService (Transient)");
+            logs[5].ToString().ShouldEqual("RecordNoInterface : IEquatable`1 (Transient)");
+            logs[6].ToString().ShouldEqual("RecordWithInterface : IRecordWithInterface (Transient)");
+            logs[7].ToString().ShouldEqual("RecordWithInterface : IEquatable`1 (Transient)");
         }
 
         [Fact]
@@ -140,21 +133,14 @@ namespace Test
                 _output.WriteLine(log.ToString());
             }
             service.Count.ShouldEqual(5);
-            service.Contains(
-                new ServiceDescriptor(typeof(IMyOtherService), typeof(MyOtherScopeService), ServiceLifetime.Transient),
-                new CheckDescriptor()).ShouldBeTrue();
-            service.Contains(
-                new ServiceDescriptor(typeof(IMyOtherService), typeof(MyOtherService), ServiceLifetime.Transient),
-                new CheckDescriptor()).ShouldBeTrue();
-            service.Contains(
-                new ServiceDescriptor(typeof(IMyService), typeof(MyScopeService), ServiceLifetime.Scoped),
-                new CheckDescriptor()).ShouldBeTrue();
-            service.Contains(
-                new ServiceDescriptor(typeof(IMyService), typeof(MyService), ServiceLifetime.Transient),
-                new CheckDescriptor()).ShouldBeTrue();
-            service.Contains(
-                new ServiceDescriptor(typeof(IRecordWithInterface), typeof(RecordWithInterface), ServiceLifetime.Transient),
-                new CheckDescriptor()).ShouldBeTrue();
+            logs[0].ToString().ShouldEqual("The interface IDisposable is ignored");
+            logs[1].ToString().ShouldEqual("The interface ISerializable is ignored");
+            logs[2].ToString().ShouldEqual("The interface IEquatable`1 is ignored");
+            logs[3].ToString().ShouldEqual("MyOtherScopeService : IMyOtherService (Scoped)");
+            logs[4].ToString().ShouldEqual("MyOtherService : IMyOtherService (Transient)");
+            logs[5].ToString().ShouldEqual("MyScopeService : IMyService (Scoped)");
+            logs[6].ToString().ShouldEqual("MyService : IMyService (Transient)");
+            logs[7].ToString().ShouldEqual("RecordWithInterface : IRecordWithInterface (Transient)");
         }
 
         [Fact]

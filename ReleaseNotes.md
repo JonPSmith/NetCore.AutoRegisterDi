@@ -1,5 +1,11 @@
 # Release notes
 
+NOTE TO SELF: The Test project didn't compile when in Release mode (but works in Debug). I unloaded the Test project to build the NuGet
+
+## 2.2.0
+
+- New Feature: Method to ignore generic interfaces. Useful if you use record types and don't want to add its IEquatable<> to the DI
+
 ## 2.1.0
 
 - New feature: IgnoreThisInterface method adds a interface to its interface ignore list.

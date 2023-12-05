@@ -3,10 +3,10 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageVersion>2.1.0</PackageVersion>
-    <Version>2.1.0</Version>
-    <AssemblyVersion>2.1.0.0</AssemblyVersion>
-    <FileVersion>2.1.0.0</FileVersion>
+    <PackageVersion>2.2.0</PackageVersion>
+    <Version>2.2.0</Version>
+    <AssemblyVersion>2.2.0.0</AssemblyVersion>
+    <FileVersion>2.2.0.0</FileVersion>
     <PackageId>NetCore.AutoRegisterDi</PackageId>
     <PackageProjectUrl>https://github.com/JonPSmith/NetCore.AutoRegisterDi</PackageProjectUrl>
     <PackageLicenseUrl>https://raw.githubusercontent.com/JonPSmith/NetCore.AutoRegisterDi/master/LICENCE.txt</PackageLicenseUrl>
@@ -18,11 +18,8 @@
     <Company>Selective Analytics</Company>
     <Description>Extension method to find/register classes in an assembly into Microsoft.Extensions.DependencyInjection</Description>
     <PackageReleaseNotes>
-      - New feature: IgnoreThisInterface method adds a interface to its interface ignore list.
-      - Improvement: Added ISerializable interface to the default interface ignore list (IDisposable is already in base ignore list)
-      - Improvement: You can use muliple have Where methods to filter out classes
-      - Improvement: Returns a list of the classes/interfaces registered with the DI provider (useful for debugging)
-    </PackageReleaseNotes>
+		- New Feature: Method to ignore generic interfaces. Useful if you use record types and don't want to add its IEquatable to the DI
+	</PackageReleaseNotes>
     <PackageIconUrl>https://raw.githubusercontent.com/JonPSmith/NetCore.AutoRegisterDi/master/AutoRegisterDiIcon128.png</PackageIconUrl>
   </PropertyGroup>
 
@@ -35,7 +32,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="2.1.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="2.1.1" />
   </ItemGroup>
 
 </Project>

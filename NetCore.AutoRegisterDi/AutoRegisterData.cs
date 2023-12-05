@@ -36,18 +36,6 @@ namespace NetCore.AutoRegisterDi
         /// </summary>
         public IEnumerable<Type> TypesToConsider { get; }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        internal List<Type> InterfacesToIgnore { get; set; }
-            = new List<Type>
-            {
-                typeof(IDisposable),
-                typeof(ISerializable),
-                typeof(IEquatable<>) //added for records
-            };
-
-
         internal List<Type> FullyDefinedInterfacesToIgnore { get; set; }
             = new List<Type>
             {

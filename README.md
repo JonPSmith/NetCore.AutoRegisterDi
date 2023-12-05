@@ -2,7 +2,7 @@
 
 I have written a simple version of AutoFac's `RegisterAssemblyTypes` method that works directly with Microsoft's DI provider, i.e this library to scan an assemby (or assemblies) on your application and register all the public normal classes (i.e not [generic classes](https://www.tutorialspoint.com/Generics-vs-non-generics-in-Chash)) that have an interface into the Microsoft NET's [Dependency injection provider](https://learn.microsoft.com/en-us/dotnet/core/extensions/dependency-injection) (DI for short).
 
-The NetCore.AutoRegisterDi is available on [NuGet as EfCore.SchemaCompare](https://www.nuget.org/packages/NetCore.AutoRegisterDi) and is an open-source library under the MIT license. The documenation is found in the [README file](https://github.com/JonPSmith/NetCore.AutoRegisterDi/blob/master/README.md and the [ReleaseNotes](https://github.com/JonPSmith/NetCore.AutoRegisterDi/blob/masterReleaseNotes.md) for details of changes and information for each release.
+The NetCore.AutoRegisterDi is available on [NuGet as EfCore.SchemaCompare](https://www.nuget.org/packages/NetCore.AutoRegisterDi) and is an open-source library under the MIT license. The documenation is found in the [README file](https://github.com/JonPSmith/NetCore.AutoRegisterDi/blob/master/README.md) and the [ReleaseNotes](https://github.com/JonPSmith/NetCore.AutoRegisterDi/blob/masterReleaseNotes.md) contains the details of each release.
 
 ## Why have I written this extension?
 

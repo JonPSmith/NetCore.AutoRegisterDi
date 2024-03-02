@@ -3,10 +3,10 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageVersion>2.2.0</PackageVersion>
-    <Version>2.2.0</Version>
-    <AssemblyVersion>2.2.0.0</AssemblyVersion>
-    <FileVersion>2.2.0.0</FileVersion>
+    <PackageVersion>2.2.1</PackageVersion>
+    <Version>2.2.1</Version>
+    <AssemblyVersion>2.2.1.0</AssemblyVersion>
+    <FileVersion>2.2.1.0</FileVersion>
     <PackageId>NetCore.AutoRegisterDi</PackageId>
     <PackageProjectUrl>https://github.com/JonPSmith/NetCore.AutoRegisterDi</PackageProjectUrl>
     <PackageLicenseUrl>https://raw.githubusercontent.com/JonPSmith/NetCore.AutoRegisterDi/master/LICENCE.txt</PackageLicenseUrl>
@@ -18,7 +18,7 @@
     <Company>Selective Analytics</Company>
     <Description>Extension method to find/register classes in an assembly into Microsoft.Extensions.DependencyInjection</Description>
     <PackageReleaseNotes>
-		- New Feature: Method to ignore generic interfaces. Useful if you use record types and don't want to add its IEquatable to the DI
+		- Updated ReadMe to have the correct NuGet name
 	</PackageReleaseNotes>
     <PackageIconUrl>https://raw.githubusercontent.com/JonPSmith/NetCore.AutoRegisterDi/master/AutoRegisterDiIcon128.png</PackageIconUrl>
   </PropertyGroup>
